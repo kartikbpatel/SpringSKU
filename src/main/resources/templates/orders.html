@@ -1,0 +1,173 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Product SKU Management</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" href="/bootstrap.min.css" media="screen" />
+<style>
+.name {
+	font-size: 25px;
+	font-weight: bold;
+	color: #fff;
+	padding-top: 12px;
+}
+</style>
+</head>
+<body>
+	<div class="container">
+		<nav class="navbar navbar-inverse navbar-fixed-top">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<a class="" href="#"><span class="name pull-left">LOGO</span></a>
+				</div>
+			</div>
+		</nav>
+
+		<div class="row">
+			<hr />
+		</div>
+
+		<div class="page-header" id="banner">
+			<div class="row">
+				<div class="col-lg-8 col-md-7 col-sm-6">
+					<form enctype="multipart/form-data" id="fileUploadForm">
+						<div class="form-group">
+							<label for="vendor_name">Select Vendor</label>
+							<div class="dropdown" name="vendor">
+								<select name="vendor" id="vendor">
+									<option th:each="vendor : ${vendorslist}"
+										th:value="${vendor.key}" th:text="${vendor.value}"
+										th:id="${vendor.value}" />
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="product_sku">Enter Product SKU</label> <input
+								type="text" class="form-control" id="product_sku" />
+						</div>
+						<p class="text-center">OR</p>
+						<div class="form-group">
+							<label for="upload-file-input">Upload CSV</label> <input
+								type="file" name="files" accept=".csv" id="upload" />
+						</div>
+						<div class="form-group">
+							<label for="starting_id">Starting ID</label> <input type="text"
+								class="form-control" id="starting_id" />
+						</div>
+						<hr style="border-top: 2px dashed #ecf0f1;" />
+						<div class="form-group">
+							<label for="sku_type">SKU Type to Create</label>
+							<div class="checkbox" name="sku_type"
+								th:each="skutype : ${skutypelist}">
+								<label><span th:text="${skutype.value}"></span><input
+									style="margin-left: 10px;" type="checkbox"
+									th:field="*{skutypelist}" th:value="${skutype.key}" /></label>
+							</div>
+						</div>
+						<button type="submit" class="btn btn-default" id="btn_submit">START</button>
+						<a class="btn btn-default" id="btn_download" href="/api/download" target="_blank">DOWNLOAD</a>
+					</form>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-lg-8 col-md-7 col-sm-6">
+					<h1>List of SKU</h1>
+
+					<table class="table table-striped table-hover">
+						<thead>
+							<tr>
+								<th>#</th>
+								<th>Vendor</th>
+								<th>SKU ID(s)</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="sku : ${skus}">
+								<td th:text="${sku.skuId}"></td>
+								<td th:text="${sku.vendor}"></td>
+								<td th:text="${sku.productSku}"></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+		</div>
+	</div>
+	<div th:replace="fragments/footer :: footer">...</div>
+
+	<script src="/jquery.js" type="application/javascript"></script>
+	<script type="application/javascript" th:inline="javascript">
+	
+	$(document).ready(function () {
+	    $("#btn_submit").click(function (event) {
+	        event.preventDefault();
+	        fire_ajax_submit();
+	    });
+	});
+	
+	function fire_ajax_submit() {
+
+	    var uploadedFile = $("#upload")[0].files.length;
+	    
+	    var url = "/api/create";
+	    if(uploadedFile===1)
+	    	var url = "/api/upload";
+	    
+	    var productSku = $("#product_sku").val();
+	    var startingId = $("#starting_id").val();
+	    var vendor = $("#vendor").val();
+	    
+	    /*<![CDATA[*/
+		if($.trim(productSku) === "" && uploadedFile !== 1 ) {
+        	alert("You must enter or upload the product SKU");
+    	} 
+	    /*]]>*/
+		  else if($.trim(startingId)===""){
+        	alert("You must enter the starting ID");
+	    }
+	    else if (!$(".checkbox :checkbox").is(":checked")){
+	        alert("You must select at least one SKU type");
+	    }
+    	else{ 
+		    var form = $('#fileUploadForm')[0];
+		    var data = new FormData(form);
+	    
+		    var productIds = [];
+	        $(".checkbox :checkbox:checked").each(function(){
+	           productIds.push($(this).attr("value"));
+	        });
+
+		    data.append("productSku", productSku);
+		    data.append("startingId", startingId);
+		    data.append("productIds[]", productIds);
+
+	    	$("#btn_submit").prop("disabled", true);
+	    
+		    $.ajax({
+		        type: "POST",
+		        enctype: 'multipart/form-data',
+		        url: url,
+		        data: data,
+		        processData: false,
+		        contentType: false,
+		        cache: false,
+		        timeout: 600000,
+		        success: function (data) {
+		        	if (confirm("Record has been saved!")){
+		        		window.location.href = window.location.href;
+	                }
+		        },
+		        error: function (e) {
+		            $("#result").text(e.responseText);
+		            console.log("ERROR : ", e);
+		            $("#btn_submit").prop("disabled", false);
+	
+		        }
+		    });
+    	}
+	}
+	</script>
+</body>
+</html>
