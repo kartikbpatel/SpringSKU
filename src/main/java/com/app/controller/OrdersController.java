@@ -101,12 +101,12 @@ public class OrdersController {
 			@RequestParam("vendor") String vendor,
 			@RequestParam(value = "productIds[]") String[] productIds) {
 
-		System.out.println(vendor);
-		System.out.println(productSku.replace("-", ""));
-		System.out.println(startingId);
-
-		for (String str : productIds)
-			System.out.println(str);
+//		System.out.println(vendor);
+//		System.out.println(productSku.replace("-", ""));
+//		System.out.println(startingId);
+//
+//		for (String str : productIds)
+//			System.out.println(str);
 
 		Sku sku = new Sku();
 		sku.setVendor(vendor);
@@ -123,12 +123,13 @@ public class OrdersController {
 			@RequestParam("vendor") String vendor,
 			@RequestParam(value = "productIds[]") String[] productIds,
 			@RequestParam("files") MultipartFile[] uploadfiles) {
-		System.out.println(vendor);
-		System.out.println(productSku);
-		System.out.println(startingId);
-
-		for (String str : productIds)
-			System.out.println(str);
+		
+//		System.out.println(vendor);
+//		System.out.println(productSku);
+//		System.out.println(startingId);
+//
+//		for (String str : productIds)
+//			System.out.println(str);
 
 		String uploadedFileName = Arrays.stream(uploadfiles)
 				.map(x -> x.getOriginalFilename())
@@ -136,7 +137,7 @@ public class OrdersController {
 				.collect(Collectors.joining(" , "));
 
 		if (StringUtils.isEmpty(uploadedFileName)) {
-			return new ResponseEntity("please select a file!", HttpStatus.OK);
+			return new ResponseEntity(HttpStatus.OK);
 		}
 
 		try {
@@ -155,8 +156,9 @@ public class OrdersController {
 				skus = line[0];
 			}
 			String[] sku = skus.split(",");
-			for (String str : sku)
-				System.out.println(str.replace("-", ""));
+			
+//			for (String str : sku)
+//				System.out.println(str.replace("-", ""));
 
 			Sku mySku = new Sku();
 			mySku.setVendor(vendor);
@@ -168,15 +170,9 @@ public class OrdersController {
 		}
 
 		File file = new File(csvFile);
+		file.delete();
 
-		if (file.delete()) {
-			System.out.println(file.getName() + " is deleted!");
-		} else {
-			System.out.println("Delete operation is failed.");
-		}
-
-		return new ResponseEntity(
-				"Successfully uploaded - " + uploadedFileName, HttpStatus.OK);
+		return new ResponseEntity(HttpStatus.OK);
 
 	}
 

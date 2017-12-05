@@ -68,8 +68,11 @@
 									th:field="*{skutypelist}" th:value="${skutype.key}" /></label>
 							</div>
 						</div>
-						<button type="submit" class="btn btn-default" id="btn_submit">START</button>
-						<a class="btn btn-default" id="btn_download" href="/api/download"
+						<div class="alert alert-danger alert-dismissable fade in" id="alertMsg"
+							style="display: none;">
+						</div>
+						<button type="submit" class="btn btn-primary" id="btn_submit">START</button>
+						<a class="btn btn-info" id="btn_download" href="/api/download"
 							target="_blank">DOWNLOAD</a>
 					</form>
 				</div>
@@ -101,10 +104,15 @@
 
 	<script src="/jquery.js" type="application/javascript"></script>
 	<script type="application/javascript" th:inline="javascript">
-		
-		
-		
 	
+	function alertMsg(msg) {
+    	$('#alertMsg').show();
+    	$("#alertMsg").html(msg);
+		$("#alertMsg").fadeTo(2000, 500).slideUp(500, function(){
+		    $("#alertMsg").slideUp(500);
+		});
+	}
+		
 	$(document).ready(function () {
 	    $("#btn_submit").click(function (event) {
 	        event.preventDefault();
@@ -126,14 +134,14 @@
 	    
 	    /*<![CDATA[*/
 		if($.trim(productSku) === "" && uploadedFile !== 1 ) {
-        	alert("You must enter or upload the product SKU");
+        	alertMsg("You must enter or upload the product SKU");
     	} 
 	    /*]]>*/
 		  else if($.trim(startingId)===""){
-        	alert("You must enter the starting ID");
+        	alertMsg("You must enter the starting ID");
 	    }
 	    else if (!$(".checkbox :checkbox").is(":checked")){
-	        alert("You must select at least one SKU type");
+        	alertMsg("You must select at least one SKU type");
 	    }
     	else{ 
 		    var form = $('#fileUploadForm')[0];
@@ -160,19 +168,18 @@
 		        cache: false,
 		        timeout: 600000,
 		        success: function (data) {
-		        	if (confirm("Record has been saved!")){
-		        		window.location.href = window.location.href;
-	                }
+		        		alert("Record has been saved!"); 
+		        		$("#btn_submit").prop("disabled", false); 
+		        		location.reload(true);
 		        },
 		        error: function (e) {
-		            $("#result").text(e.responseText);
-		            console.log("ERROR : ", e);
-		            $("#btn_submit").prop("disabled", false);
-	
+		           /* $("#btn_submit").prop("disabled", false); */
 		        }
 		    });
     	}
 	}
+	
+	
 	
 	
 	
