@@ -29,8 +29,12 @@
 
 		<div class="page-header" id="banner">
 			<div class="row">
-				<div class="col-lg-8 col-md-7 col-sm-6">
+				<div class="col-lg-6 col-md-6 col-sm-12"
+					style="border-right: 1px solid #ecf0f1;">
 					<form enctype="multipart/form-data" id="fileUploadForm">
+						<h4 class="text-center"
+							style="color: rgb(24, 188, 156); font-weight: bold;">ADD</h4>
+						<hr style="border-top: 1px solid #ecf0f1;" />
 						<div class="form-group">
 							<label for="vendor_name">Select Vendor</label>
 							<div class="dropdown" name="vendor">
@@ -65,15 +69,14 @@
 							</div>
 						</div>
 						<button type="submit" class="btn btn-default" id="btn_submit">START</button>
-						<a class="btn btn-default" id="btn_download" href="/api/download" target="_blank">DOWNLOAD</a>
+						<a class="btn btn-default" id="btn_download" href="/api/download"
+							target="_blank">DOWNLOAD</a>
 					</form>
 				</div>
-			</div>
-
-			<div class="row">
-				<div class="col-lg-8 col-md-7 col-sm-6">
-					<h1>List of SKU</h1>
-
+				<div class="col-lg-6 col-md-6 col-sm-12">
+					<h4 class="text-center"
+						style="color: rgb(24, 188, 156); font-weight: bold;">VIEW</h4>
+					<hr style="border-top: 1px solid #ecf0f1;" />
 					<table class="table table-striped table-hover">
 						<thead>
 							<tr>
@@ -92,13 +95,15 @@
 					</table>
 				</div>
 			</div>
-
 		</div>
 	</div>
 	<div th:replace="fragments/footer :: footer">...</div>
 
 	<script src="/jquery.js" type="application/javascript"></script>
 	<script type="application/javascript" th:inline="javascript">
+		
+		
+		
 	
 	$(document).ready(function () {
 	    $("#btn_submit").click(function (event) {
@@ -168,6 +173,9 @@
 		    });
     	}
 	}
+	
+	
+	
 	</script>
 </body>
 </html>

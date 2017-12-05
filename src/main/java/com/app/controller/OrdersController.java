@@ -50,6 +50,11 @@ public class OrdersController {
 	// Save the uploaded file to this folder
 	private static String UPLOADED_FOLDER = "/Information Technology/Projects/Eclipse Workspace/Rohit Sir/GeschriebenTwo/src/main/resources/csv/";
 
+	@RequestMapping(value = "/", method = RequestMethod.GET)
+	public String index() {
+		return "redirect:/orders";
+	}
+	
 	@RequestMapping(value = "/orders", method = RequestMethod.GET)
 	public String productsList(Model model) {
 
